@@ -1,5 +1,5 @@
 __load__:
-#  - https://github.com/hakehuang/yml_merger/test/record/blob/master/web.yml
+  - https://raw.githubusercontent.com/hakehuang/yml_merger/master/test/records/web.yml
   - heirarchy.yml
 
 __common__:

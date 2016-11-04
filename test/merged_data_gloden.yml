@@ -64,6 +64,7 @@ T1:
     inner_b:
       inner_common: inner common
     inner_common_top: I am top
+  message: this is greeting from github
 T2:
   mode: post-process-app
   attribute: required
@@ -109,6 +110,7 @@ T2:
     inner_b:
       inner_common: inner common
     inner_common_top: I am top
+  message: this is greeting from github
 T4:
   src:
     sample_string_top: top
@@ -125,6 +127,7 @@ T4:
           msg_top: top
   inner_common:
     inner_common_top: I am top
+  message: this is greeting from github
 Component:
   configuration:
     section-type: component
@@ -170,3 +173,4 @@ Component:
       inner_common: inner common
     inner_common_top: I am top
   attribute: required
+  message: this is greeting from github
