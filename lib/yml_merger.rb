@@ -2,11 +2,12 @@ require 'rubygems'
 require "yaml"
 require "deep_merge"
 require 'fileutils'
-require '_assert'
+require 'open-uri'
+require 'uri'
 
 
 # implement of deep merge for nested hash and array of hash
-class Merge
+class YML_Merger
     attr_accessor :filestructure, :filestack, :ENTRY_YML, :search_paths
 
 
@@ -96,14 +97,18 @@ class Merge
         @filestack.push(file)
         #add globals.yml before load file
         puts file
-        content = File::read(file.gsub("\\","/"))
+        content = open(file.gsub("\\","/")){|f| f.read}
         content = YAML::load(content)
         return if  content.class == FalseClass
         #if has file dependence load it
         if content['__load__'] != nil
             #load file in reversed sequence
             content['__load__'].reverse_each do |loadfile|
-              structure = process_file(@search_paths + loadfile.gsub("\\","/"))
+              if loadfile =~ URI::regexp
+                structure = process_file(loadfile)
+              else
+                structure = process_file(@search_paths + loadfile.gsub("\\","/"))
+              end
               content = content.deep_merge(deep_copy(structure))
               pre_process(content)
               merge_by_hierarchy(content)

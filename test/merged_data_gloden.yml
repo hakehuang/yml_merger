@@ -1,0 +1,172 @@
+---
+T1:
+  mode: post-process-app
+  attribute: required
+  replace:
+    remains:
+      msg: I will not be replaced
+    replaced:
+      msg: I replace something
+  remove:
+    remains:
+      msg: I will not be removed
+  post_process_lib:
+    node1:
+      attribute: required
+      msg: I am node1
+    node2:
+      attribute: required
+      msg: I am node2
+    mode: post-process-lib
+  __add__:
+  - Component
+  src:
+    sample_array:
+    - path: help_leaf
+      rootdir: where are we in leaf
+    - path: me_leaf
+      rootdir: where are we in leaf
+    - path: help_hier
+      rootdir: where are we hier
+    - path: me_hier
+      rootdir: where are we hier
+    - path: help_top
+      rootdir: where are we top
+    - path: me_top
+      rootdir: where are we top
+    sample_hash:
+      src:
+        aaa_leaf:
+          leaf: leaf
+        bbb_leaf:
+          leaf: leaf
+        aaa_hier: {}
+        bbb_hier: {}
+        aaa:
+          msg_top: top
+        bbb:
+          msg_top: top
+    sample_string_hier: hier
+    inform:
+      hier: inform from hier
+    sample_string_top: top
+  leaf:
+    pre_process_node:
+      inform: I will be added by a msg as brother
+      hash:
+        msg: I am inocent
+      msg: I am added by pre_process
+  leafa:
+    msg: I am leafa
+  inner_common:
+    inner_a:
+      inner_common: inner common
+    inner_b:
+      inner_common: inner common
+    inner_common_top: I am top
+T2:
+  mode: post-process-app
+  attribute: required
+  replace:
+    replaced:
+      msg: I replace something
+  remove:
+    remains:
+      msg: I will not be removed
+  leaf:
+    pre_process_node:
+      inform: I will be added by a msg as brother
+      hash:
+        msg: I am inocent
+      msg: I am added by pre_process
+  leafb:
+    msg: I am leafb
+  src:
+    sample_string_hier: hier
+    sample_array:
+    - path: help_hier
+      rootdir: where are we hier
+    - path: me_hier
+      rootdir: where are we hier
+    - path: help_top
+      rootdir: where are we top
+    - path: me_top
+      rootdir: where are we top
+    sample_hash:
+      src:
+        aaa_hier: {}
+        bbb_hier: {}
+        aaa:
+          msg_top: top
+        bbb:
+          msg_top: top
+    inform:
+      hier: inform from hier
+    sample_string_top: top
+  inner_common:
+    inner_a:
+      inner_common: inner common
+    inner_b:
+      inner_common: inner common
+    inner_common_top: I am top
+T4:
+  src:
+    sample_string_top: top
+    sample_array:
+    - path: help_top
+      rootdir: where are we top
+    - path: me_top
+      rootdir: where are we top
+    sample_hash:
+      src:
+        aaa:
+          msg_top: top
+        bbb:
+          msg_top: top
+  inner_common:
+    inner_common_top: I am top
+Component:
+  configuration:
+    section-type: component
+  msg: I am a component
+  sample_string: hellor world
+  sample_array:
+  - path: help
+    rootdir: where are we
+  - path: me
+    rootdir: where are we
+  sample_hash:
+    h1:
+      aaa: {}
+      bbb: {}
+  leafa:
+    msg: I am leafa
+  src:
+    sample_string_hier: hier
+    sample_array:
+    - path: help_hier
+      rootdir: where are we hier
+    - path: me_hier
+      rootdir: where are we hier
+    - path: help_top
+      rootdir: where are we top
+    - path: me_top
+      rootdir: where are we top
+    sample_hash:
+      src:
+        aaa_hier: {}
+        bbb_hier: {}
+        aaa:
+          msg_top: top
+        bbb:
+          msg_top: top
+    inform:
+      hier: inform from hier
+    sample_string_top: top
+  inner_common:
+    inner_a:
+      inner_common: inner common
+    inner_b:
+      inner_common: inner common
+    inner_common_top: I am top
+  attribute: required

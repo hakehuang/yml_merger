@@ -1,0 +1,72 @@
+
+
+__hierarchy__:
+  leafa:
+    msg: "I am leafa"
+
+
+T1:
+  __add__:
+    - Component
+  src:
+    sample_array:
+      - path: help_leaf
+        rootdir: "where are we in leaf"
+      - path: me_leaf
+        rootdir: "where are we in leaf"
+    sample_hash:
+      src:
+        aaa_leaf: 
+          leaf: "leaf"
+        bbb_leaf:
+          leaf: leaf
+  leaf:
+    pre_process:
+      mode: "pre-process-merge"
+      attribute: "required"
+      pre_process_node:
+        msg: "I am added by pre_process"
+    pre_process_node:
+      inform: "I will be added by a msg as brother"
+      hash: 
+        msg: "I am inocent"
+  replace:
+    replaced:
+      msg: "I will be replaced"
+    remains:
+      msg: "I will not be replaced"
+  remove:
+    removed:
+      msg: "I will be removed"
+    remains:
+      msg: "I will not be removed"
+  post_process_lib:
+    mode: post-process-lib
+    node1:
+      msg: "I am node1"
+    node2:
+      msg: "I am node2"
+    node3:
+      msg: "I am node3"
+
+Component:
+  configuration:
+    section-type: component
+  msg: "I am a component"
+  sample_string: "hellor world"
+  sample_array:
+    - path: help
+      rootdir: "where are we"
+    - path: me 
+      rootdir: "where are we"
+  sample_hash:
+    h1:
+      aaa: {}
+      bbb: {}
+
+
+
+
+
+
+

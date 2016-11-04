@@ -1,0 +1,26 @@
+__load__:
+  - leafa.yml
+  - leafb.yml
+
+
+__hierarchy__:
+  src:
+    sample_string_hier: "hier"
+    sample_array:
+      - path: help_hier
+        rootdir: "where are we hier"
+      - path: me_hier 
+        rootdir: "where are we hier"
+    sample_hash:
+      src:
+        aaa_hier: {}
+        bbb_hier: {}
+    inform:
+      hier: "inform from hier"
+  inner_common:
+    __common__:
+      inner_common: "inner common"
+    inner_a: {}
+    inner_b: {}
+  
+

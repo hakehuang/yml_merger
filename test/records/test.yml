@@ -1,0 +1,54 @@
+__load__:
+#  - https://github.com/hakehuang/yml_merger/test/record/blob/master/web.yml
+  - heirarchy.yml
+
+__common__:
+  src:
+    sample_string_top: "top"
+    sample_array:
+      - path: help_top
+        rootdir: "where are we top"
+      - path: me_top
+        rootdir: "where are we top"
+    sample_hash:
+      src:
+        aaa: 
+          msg_top: "top"
+        bbb: 
+          msg_top: "top"
+  inner_common:
+    inner_common_top: "I am top"
+
+
+T1:
+  mode: post-process-app
+  attribute: "required"
+  replace:
+    __replace__:
+      replaced:
+        msg: "I replace something"
+  remove:
+    __remove__:
+      removed:
+  post_process_lib:
+    node1:
+      attribute: "required"
+    node2:
+      attribute: "required"
+
+T2:
+  mode: post-process-app
+  attribute: "required"
+  replace:
+    __replace__:
+      replaced:
+        msg: "I replace something"
+  remove:
+    __remove__:
+      removed:
+
+T3:
+  mode: post-process-app
+
+T4: {}
+
