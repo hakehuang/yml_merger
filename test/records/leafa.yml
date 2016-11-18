@@ -6,6 +6,8 @@ __hierarchy__:
 
 
 T1:
+  configuration:
+    section-type: component
   __add__:
     - Component
   src:

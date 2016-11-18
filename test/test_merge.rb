@@ -1,17 +1,27 @@
 #! ruby -I../
 
-require 'lib/yml_merger'
+#require 'lib/yml_merger'
 require 'pathname'
+require 'minitest/autorun'
+require 'yml_merger'
 
 
-@entry_yml = "test.yml"
-@search_path  = (Pathname.new(File.dirname(__FILE__)).realpath + 'records/').to_s
+class MergeTest < Minitest::Test
 
-puts @entry_yml, @search_path
+  #def initialize(option)
+  #	@NAME = "merge"
 
-merge_unit      = YML_Merger.new(
-    @entry_yml, @search_path, logger: @logger
-)
-merged_data     = merge_unit.process()
-puts "creating './merged_data.yml'"
-File.write('./merged_data.yml', YAML.dump(merged_data))
+ # end
+
+  def test_merge
+  	@entry_yml = "test.yml"
+	@search_path  = (Pathname.new(File.dirname(__FILE__)).realpath + 'records/').to_s
+	merge_unit      = YML_Merger.new(
+    @entry_yml, @search_path
+	)
+	merged_data     = merge_unit.process()
+	puts "creating './merged_data.yml'"
+	File.write('./merged_data.yml', YAML.dump(merged_data))
+  end
+
+end
