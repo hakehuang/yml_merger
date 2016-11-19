@@ -2,6 +2,13 @@
 
 This is a tool that helps to organize the YML in different files.
 
+#install
+
+```bash
+gem install yml_merger
+gem install deep_merge
+```
+
 usage:
 
 Please refer to the test.
@@ -405,4 +412,15 @@ a:
   f3:
 ```
 
+# merge process
+
+```ruby
+       @filestructure = process_file(@ENTRY_YML)
+       merge_by_add(@filestructure)
+       merge_by_common(@filestructure)
+       delete_node(@filestructure,'__common__')
+       delete_node(@filestructure,'__load__')
+       #delete_node(@filestructure,'__add__')
+       post_process(@filestructure)
+```
 
