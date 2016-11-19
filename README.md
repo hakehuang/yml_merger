@@ -2,14 +2,14 @@
 
 This is a tool that helps to organize the YML in different files.
 
-#install
+# install
 
 ```bash
 gem install yml_merger
 gem install deep_merge
 ```
 
-usage:
+# usage:
 
 Please refer to the test.
 
@@ -29,8 +29,11 @@ File.write('./merged_data.yml', YAML.dump(merged_data))
 # YML oraginzations:
 
 you can using a tree toplogic to orgainize you application, the YML files can be catalogies to three types:
+
 1. the root node which is the entry point of a tree yml
+
 2. the branch node which is the branch pint of a tree yml
+
 3. the leaf node which is the leaf node of a tree.
 
 we recommand that each leaf node shall be uniq feature. and branch node defines the branch shared feature with hierarchy.
