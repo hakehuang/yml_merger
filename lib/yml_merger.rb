@@ -10,23 +10,19 @@ require 'uri'
 class YML_Merger
     attr_accessor :filestructure, :filestack, :ENTRY_YML, :search_paths
 
-
-    def initialize(filepath, search_paths, logger: nil)
-
-        # entry filepath which fire whole process
-        @ENTRY_YML           = search_paths + '/' + filepath
-        # list of search paths to find a files
+    # initialize YML merge
+    # Params:
+    # - filepath: the entry file name
+    # - seatch_paths: rootpath to search all the needed YML files 
+    def initialize(filename, search_paths)
+        @ENTRY_YML           = search_paths + '/' + filename
         @search_paths       = search_paths
-        #hash parsed from yml files
         @filestructure = Hash.new()
-        #stack to record loaded files
         @filestack = Array.new()
-
         @KEY_LIST = ['__remove__','__load__', '__common__', '__hierarchy__', '__replace__', '__add__']
     end
 
-
-# load config
+    # process the YMLs
     def process
        @filestructure = process_file(@ENTRY_YML)
        merge_by_add(@filestructure)
@@ -39,8 +35,11 @@ class YML_Merger
 
   private
 
-#  post process nodes with strong condition
-#  merge_by_replace and merge_by_remove
+    # post process nodes with strong condition
+    # execute post-process-lib and post-process-app
+    # clean the pre-process-merge node
+    # Params:
+    # - struct: the hash to be processed
     def post_process(struct)
       return if struct.class != Hash
       merge_by_replace!(struct)
@@ -57,7 +56,7 @@ class YML_Merger
                  next
               end
             else
-              puts "delete #{key}"
+              #puts "delete #{key}"
               struct.delete(key)
               next
             end
@@ -88,15 +87,17 @@ class YML_Merger
     end
 
 
-# load and process yml files
-# recursive load and process all files in '__load__' section
+    # load and process yml files
+    # recursive load and process all files in '__load__' section
+    # Params:
+    # - file: the path to the yml file
     def process_file(file)
         #check if file is loaded yet
         return if @filestack.include?(file)
         #if not loaded,push to stack
         @filestack.push(file)
         #add globals.yml before load file
-        puts file
+        #puts file
         content = open(file.gsub("\\","/")){|f| f.read}
         content = YAML::load(content)
         return if  content.class == FalseClass
@@ -121,6 +122,10 @@ class YML_Merger
         return content
     end
 
+    # load and process yml files
+    # recursive load and process all files in '__load__' section
+    # Params:
+    # - file: the path to the yml file
     def pre_process(struct)
         return if struct.class != Hash
         struct.each_key do |key|
@@ -142,16 +147,21 @@ class YML_Merger
     end
 
 
-#delete type node in hash
-    def delete_node(struct,type)
+    # delete all node/subnode which key name is 'key' in 'hash'
+    # Params:
+    # - struct: the hash
+    # - type: the key to delete
+    def delete_node(struct, key)
         struct.each_key do |subnode|
             next if struct[subnode] == nil
-            struct.delete(type)
-            delete_node(struct[subnode],type) if Hash == struct[subnode].class
+            struct.delete(key)
+            delete_node(struct[subnode],key) if Hash == struct[subnode].class
         end
     end
 
     # perform merge by "__hierarchy__" struct
+    # Params:
+    # - struct: the hash
     def merge_by_hierarchy(struct)
         return if Hash != struct.class
         if struct['__hierarchy__'] != nil
@@ -169,6 +179,8 @@ class YML_Merger
     end
 
     # perform merge by "__common__" node
+    # Params:
+    # - struct: the hash
     def merge_by_common(struct)
         return if Hash != struct.class
         if struct['__common__'] != nil
@@ -185,6 +197,11 @@ class YML_Merger
         end
     end
 
+    # hash deep merge with __add__ recursively
+    # Params:
+    # - struct: the hash
+    # - subnode: the subnode key to be add
+    # - addon: the key that idetify the addon module
     def deep_add_merge(struct, subnode, addon)
       return if Hash != struct.class
       if struct[addon]['__add__'].nil?
@@ -200,7 +217,7 @@ class YML_Merger
            deep_add_merge(struct, addon, submodule)
          end
       else
-         puts "add #{addon}"
+        #puts "add #{addon}"
         struct[addon]['attribute'] = ""
         #struct[subnode] = struct[subnode].deep_merge(deep_copy(struct[addon]))
         struct[addon]['attribute'] = 'required'     
@@ -208,6 +225,8 @@ class YML_Merger
     end
 
     # perform merge by "__add__" node only applys to application type
+    # Params:
+    # - struct: the hash to be processed
     def merge_by_add(struct)
         #only scan the top level
         return if Hash != struct.class
@@ -232,6 +251,8 @@ class YML_Merger
     end
 
     # prepare merge by "__replace__" node
+    # Params:
+    # - struct: the hash to be processed    
     def merge_by_replace!(struct)
         return if Hash != struct.class
         #get the replace hash
@@ -247,6 +268,8 @@ class YML_Merger
     end
 
     # perform merge by "__remove__" node
+    # Params:
+    # - struct: the hash to be processed
     def merge_by_remove!(struct)
         return if Hash != struct.class
         #get the replace hash
@@ -278,6 +301,9 @@ class YML_Merger
         struct.delete('__remove__')
     end
 
+    # deep copy the hash in compare the shallow copy
+    # Params:
+    # -o: the hash to be copied 
     def deep_copy(o)
       Marshal.load(Marshal.dump(o))
     end

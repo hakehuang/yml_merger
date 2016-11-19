@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'yml_merger'
-  s.version     = '1.0.0'
+  s.version     = '0.9.0'
   s.date        = '2016-11-18'
   s.summary     = "yaml_merger"
   s.description = "yaml extension for heiarchy merge"
