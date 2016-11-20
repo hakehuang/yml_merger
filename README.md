@@ -2,6 +2,8 @@
 
 This is a tool that helps to organize the YML in different files.
 
+[source code](https://github.com/hakehuang/yml_merger.git)
+
 # install
 
 ```bash
