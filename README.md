@@ -15,6 +15,17 @@ gem install deep_merge
 
 Please refer to the test.
 
+create a yml file as below
+
+test.yml
+```
+__load__:
+  more.yml
+  
+<your yml content>
+
+```
+
 ```ruby
 require 'yml_merger'
 
@@ -27,6 +38,8 @@ merged_data     = merge_unit.process()
 puts "creating './merged_data.yml'"
 File.write('./merged_data.yml', YAML.dump(merged_data))
 ```
+
+the test.yml and more.yml content are merged together
 
 # YML oraginzations:
 
