@@ -3,18 +3,16 @@ __load__:
     require:
       - a
     import: 
-      - c
+      - d
 
 
 project:
   __add__:
     - a
-    - c
   configuration:
     section-type: application
   node_root:
     __add__:
-      - b
       - d 
     src:
       - path: test.c

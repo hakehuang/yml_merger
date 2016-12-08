@@ -1,9 +1,10 @@
 #! ruby -I../
 
-#require_relative '../lib/yml_merger'
+require_relative '../lib/yml_merger'
 require 'pathname'
 require 'minitest/autorun'
-require 'yml_merger'
+require 'yaml'
+#require 'yml_merger'
 
 
 class MergeTest < Minitest::Test
@@ -60,10 +61,11 @@ class MergeTest < Minitest::Test
     @entry_yml, @search_path
 	)
 	merged_data     = merge_unit.process()
+	#puts merged_data.to_yaml
 	assert_equal 'I am from branch a', merged_data['a']['node_root']['branch_a']
 	assert_equal 1, merged_data['project']['node_root']['src'].count
 	assert_equal nil, merged_data['b']
-	assert_equal nil, merged_data['d']
+	assert_equal nil, merged_data['c']
   end
 
 end
