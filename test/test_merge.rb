@@ -1,6 +1,6 @@
 #! ruby -I../
 
-#require 'lib/yml_merger'
+#require_relative '../lib/yml_merger'
 require 'pathname'
 require 'minitest/autorun'
 require 'yml_merger'
@@ -12,7 +12,6 @@ class MergeTest < Minitest::Test
   #	@NAME = "merge"
 
  # end
-
   def test_merge_full_feature
   	@entry_yml = "test.yml"
 	@search_path  = (Pathname.new(File.dirname(__FILE__)).realpath + 'records/').to_s
@@ -52,6 +51,19 @@ class MergeTest < Minitest::Test
 	assert_equal true,found_common
 	#__hierarchy
 	assert_equal true, found_hierarchy
+  end
+
+  def test_merge_new_load
+ 	@entry_yml = "test_new_load_root.yml"
+	@search_path  = (Pathname.new(File.dirname(__FILE__)).realpath + 'records/').to_s
+	merge_unit      = YML_Merger.new(
+    @entry_yml, @search_path
+	)
+	merged_data     = merge_unit.process()
+	assert_equal 'I am from branch a', merged_data['a']['node_root']['branch_a']
+	assert_equal 1, merged_data['project']['node_root']['src'].count
+	assert_equal nil, merged_data['b']
+	assert_equal nil, merged_data['d']
   end
 
 end

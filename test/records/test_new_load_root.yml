@@ -1,0 +1,24 @@
+__load__: 
+  - test_new_load_branch.yml:
+    require:
+      - a
+    import: 
+      - c
+
+
+project:
+  __add__:
+    - a
+    - c
+  configuration:
+    section-type: application
+  node_root:
+    __add__:
+      - b
+      - d 
+    src:
+      - path: test.c
+        rootdir: project_root
+
+
+

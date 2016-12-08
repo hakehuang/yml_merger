@@ -92,6 +92,14 @@ class YML_Merger
       end
     end
 
+    def load_file(path)
+        if path =~ URI::regexp
+          structure = process_file(path)
+        else
+          structure = process_file(@search_paths + path.gsub("\\","/"))
+        end
+        return structure
+    end
 
     # load and process yml files
     # recursive load and process all files in '__load__' section
@@ -111,10 +119,32 @@ class YML_Merger
         if content['__load__'] != nil
             #load file in reversed sequence
             content['__load__'].reverse_each do |loadfile|
-              if loadfile =~ URI::regexp
-                structure = process_file(loadfile)
+              if loadfile.class == Hash
+                structure = Hash.new
+                temp_structure = load_file(loadfile.keys[0])
+                if loadfile.has_key?("require") #for rubier
+                    loadfile['require'].each do |key|
+                      t = Hash.new
+                      t[key] = Hash.new
+                      t[key].deep_merge(temp_structure[key])
+                      structure.deep_merge(t)
+                    end
+                end
+                if loadfile.has_key?("import") #for pythoner
+                    loadfile['import'].each do |key|
+                      t = Hash.new
+                      t[key] = Hash.new
+                      t[key].deep_merge(temp_structure[key])
+                      structure.deep_merge(t)
+                    end
+                end
+
               else
-                structure = process_file(@search_paths + loadfile.gsub("\\","/"))
+                if loadfile =~ URI::regexp
+                  structure = process_file(loadfile)
+                else
+                  structure = process_file(@search_paths + loadfile.gsub("\\","/"))
+                end
               end
               content = content.deep_merge(deep_copy(structure))
               pre_process(content)
@@ -227,7 +257,7 @@ class YML_Merger
         #puts "add #{addon}"
         struct[addon]['attribute'] = ""
         #struct[subnode] = struct[subnode].deep_merge(deep_copy(struct[addon]))
-        struct[addon]['attribute'] = 'required'     
+        struct[addon]['attribute'] = 'required'   
       end
     end
 
@@ -240,16 +270,17 @@ class YML_Merger
         struct.each_key do |subnode|
           next if @KEY_LIST.include?(subnode)
           next if struct[subnode].nil?
-          if struct[subnode]['__add__'] != nil
+          next if struct[subnode].class != Hash
+          if struct[subnode].has_key?('__add__')
             struct[subnode]['__add__'].each do |addon|
               next if struct[addon].class != Hash
             begin
               next if struct[subnode]['configuration']['section-type'] != "application"
               if struct[addon]['configuration']['section-type'] != "component"
-                puts "WARNING #{addon} is required as component but has not a component attribute"
+                @logger.warn "WARNING #{addon} is required as component but has not a component attribute"
               end
             rescue
-              puts "error with the merge_by_add with #{subnode} add #{addon}"
+              @logger.warn "no full configuration/section-type with the merge_by_add with #{subnode} add #{addon}"
             end
               deep_add_merge(struct, subnode, addon)
             end

@@ -1,0 +1,19 @@
+
+a:
+  node_root:
+    branch_a: "I am from branch a"
+
+b: 
+  src: 
+    - path: b.c
+      rootdir: "branch b"
+
+c:
+  node_root:
+    branch_c: "I am from branch c"
+
+d: 
+  src: 
+    - path: d.c
+      rootdir: "branch d"
+
