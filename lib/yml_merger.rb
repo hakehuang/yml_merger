@@ -122,23 +122,16 @@ class YML_Merger
               if loadfile.class == Hash
                 structure = Hash.new
                 temp_structure = load_file(loadfile.keys[0])
-                if loadfile.has_key?("require") #for rubier
-                    loadfile['require'].each do |key|
+                loadfile.each do |key, value|
+                  if value.class == Array
+                    value.each do |vt|
                       t = Hash.new
-                      t[key] = Hash.new
-                      t[key].deep_merge(temp_structure[key])
+                      t[vt] = Hash.new
+                      t[vt].deep_merge(temp_structure[vt])
                       structure.deep_merge(t)
                     end
+                  end
                 end
-                if loadfile.has_key?("import") #for pythoner
-                    loadfile['import'].each do |key|
-                      t = Hash.new
-                      t[key] = Hash.new
-                      t[key].deep_merge(temp_structure[key])
-                      structure.deep_merge(t)
-                    end
-                end
-
               else
                 if loadfile =~ URI::regexp
                   structure = process_file(loadfile)

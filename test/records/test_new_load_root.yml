@@ -1,9 +1,6 @@
 __load__: 
-  - test_new_load_branch.yml:
-    require:
-      - a
-    import: 
-      - d
+  - test_new_load_branch.yml: [a, d]
+  - test_normal_load.yml
 
 
 project:
