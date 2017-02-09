@@ -25,7 +25,8 @@ class YML_Merger
         @search_paths       = search_paths
         @filestructure = Hash.new()
         @filestack = Array.new()
-        @KEY_LIST = ['__remove__','__load__', '__common__', '__hierarchy__', '__replace__', '__add__']
+        # @KEY_LIST = ['__remove__','__load__', '__common__', '__hierarchy__', '__replace__', '__add__']
+        @KEY_LIST = %w('__remove__', '__load__', '__common__', '__hierarchy__', '__replace__', '__add__')
     end
 
     # process the YMLs
@@ -51,44 +52,43 @@ class YML_Merger
       merge_by_replace!(struct)
       merge_by_remove!(struct)
       struct.each_key do |key|
-        if Hash == struct[key].class
-          if struct.key?("mode") and struct["mode"] == "post-process-lib"
-            if struct[key].has_key?("attribute")
-              if struct[key]["attribute"] == "required"
-                 @logger.debug "keep #{key}"
-              else
-                 struct.delete(key)
-                 @logger.debug "deletes #{key}"
-                 next
-              end
+        next if Hash != struct[key].class
+        if struct.key?('mode') and struct['mode'] == 'post-process-lib'
+          if struct[key].has_key?('attribute')
+            if struct[key]['attribute'] == 'required'
+               @logger.debug "keep #{key}"
             else
-              @logger.debug "delete #{key}"
-              struct.delete(key)
-              next
+               struct.delete(key)
+               @logger.debug "deletes #{key}"
+               next
             end
+          else
+            @logger.debug "delete #{key}"
+            struct.delete(key)
+            next
           end
-          if struct[key].key?("mode") and struct[key]["mode"] == "post-process-app"
-            if struct[key].has_key?("attribute")
-              if struct[key]["attribute"] == "required"
-                @logger.debug "keep #{key}"
-              else
-                struct.delete(key)
-                @logger.debug "deletes #{key}"
-                next
-              end
+        end
+        if struct[key].key?('mode') and struct[key]['mode'] == 'post-process-app'
+          if struct[key].has_key?('attribute')
+            if struct[key]['attribute'] == 'required'
+              @logger.debug "keep #{key}"
             else
-              @logger.debug "delete #{key}"
-              struct.delete(key)
-              next
-            end
-          end
-          if struct[key].key?("mode") and struct[key]["mode"] == "pre-process-merge"
               struct.delete(key)
               @logger.debug "deletes #{key}"
               next
+            end
+          else
+            @logger.debug "delete #{key}"
+            struct.delete(key)
+            next
           end
-          post_process(struct[key])
         end
+        if struct[key].key?('mode') and struct[key]['mode'] == 'pre-process-merge'
+            struct.delete(key)
+            @logger.debug "deletes #{key}"
+            next
+        end
+        post_process(struct[key])
       end
     end
 
@@ -96,7 +96,7 @@ class YML_Merger
         if path =~ URI::regexp
           structure = process_file(path)
         else
-          structure = process_file(@search_paths + path.gsub("\\","/"))
+          structure = process_file(@search_paths + path.tr('\\','/'))
         end
         return structure
     end
@@ -112,7 +112,7 @@ class YML_Merger
         @filestack.push(file)
         #add globals.yml before load file
         @logger.info file
-        content = open(file.gsub("\\","/")){|f| f.read}
+        content = open(file.tr('\\','/')){|f| f.read}
         content = YAML::load(content)
         return if  content.class == FalseClass
         #if has file dependence load it
@@ -136,7 +136,7 @@ class YML_Merger
                 if loadfile =~ URI::regexp
                   structure = process_file(loadfile)
                 else
-                  structure = process_file(@search_paths + loadfile.gsub("\\","/"))
+                  structure = process_file(@search_paths + loadfile.gsub('\\','/'))
                 end
               end
               content = content.deep_merge(deep_copy(structure))
@@ -159,8 +159,8 @@ class YML_Merger
         return if struct.class != Hash
         struct.each_key do |key|
           next if struct[key].class != Hash
-          if struct[key].has_key?('mode') and struct[key]['mode'] == "pre-process-merge"
-             if struct[key]['attribute'] == "required"
+          if struct[key].has_key?('mode') and struct[key]['mode'] == 'pre-process-merge'
+             if struct[key]['attribute'] == 'required'
                 struct[key].each_key do |subkey|
                     if struct.has_key?(subkey) and struct[subkey].class == Hash
                         @logger.debug "pre process #{key} -> #{subkey}"
@@ -268,8 +268,8 @@ class YML_Merger
             struct[subnode]['__add__'].each do |addon|
               next if struct[addon].class != Hash
             begin
-              next if struct[subnode]['configuration']['section-type'] != "application"
-              if struct[addon]['configuration']['section-type'] != "component"
+              next if struct[subnode]['configuration']['section-type'] != 'application'
+              if struct[addon]['configuration']['section-type'] != 'component'
                 @logger.warn "WARNING #{addon} is required as component but has not a component attribute"
               end
             rescue
@@ -288,9 +288,9 @@ class YML_Merger
     def merge_by_replace!(struct)
         return if Hash != struct.class
         #get the replace hash
-        return if ! struct.has_key?("__replace__")
+        return if ! struct.has_key?('__replace__')
         temp = Hash.new
-        temp = temp.deep_merge(deep_copy(struct["__replace__"]))
+        temp = temp.deep_merge(deep_copy(struct['__replace__']))
         temp.each_key do |key|
            next if ! struct.has_key?(key)
            delete_node(struct, key)
@@ -305,24 +305,24 @@ class YML_Merger
     def merge_by_remove!(struct)
         return if Hash != struct.class
         #get the replace hash
-        return if ! struct.has_key?("__remove__")
+        return if ! struct.has_key?('__remove__')
         temp = Hash.new
-        temp = temp.deep_merge(deep_copy(struct["__remove__"]))
+        temp = temp.deep_merge(deep_copy(struct['__remove__']))
         temp.each_key do |key|
           next if ! struct.has_key?(key)
-          if struct["__remove__"][key] == nil
+          if struct['__remove__'][key] == nil
             delete_node(struct, key)
           else
-            if struct["__remove__"][key].class == Array
+            if struct['__remove__'][key].class == Array
               arr = Array.new
-              arr = deep_copy(struct["__remove__"][key])
+              arr = deep_copy(struct['__remove__'][key])
               arr.each do |item|
                 next if ! struct[key].include?(item)
                 struct[key].delete(item)
               end
-            elsif struct["__remove__"][key].class == Hash
+            elsif struct['__remove__'][key].class == Hash
               hash = Hash.new
-              hash = hash.deep_merge(deep_copy(struct["__remove__"][key]))
+              hash = hash.deep_merge(deep_copy(struct['__remove__'][key]))
               hash.each_key do |subkey|
                 next if ! struct[key].has_key?(subkey)
                 delete_node(struct[key], subkey)
