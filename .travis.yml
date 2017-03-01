@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.3.0
+
+install:
+  - gem install yml_merger
+  - gem install deep_merge 
+
+before_install:
+  - gem update --system
