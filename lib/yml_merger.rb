@@ -243,7 +243,11 @@ class YML_Merger
       end
       #if has more addon
       if struct[addon]['__add__'].count != 0
-         struct[addon]['__add__'].each do |submodule|
+         #puts "add #{addon}"
+         struct[addon]['attribute'] = ""
+         #struct[subnode] = struct[subnode].deep_merge(deep_copy(struct[addon]))
+         struct[addon]['attribute'] = 'required'  
+         struct[addon]['__add__'].each do |submodule|         
            deep_add_merge(struct, addon, submodule)
          end
       else
