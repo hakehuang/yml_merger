@@ -113,7 +113,7 @@ class YML_Merger
         #add globals.yml before load file
         @logger.info file
         content = open(file.tr('\\','/')){|f| f.read}
-        content = YAML::load(content)
+        content = YAML::load(content, aliases: true)
         return if  content.class == FalseClass
         #if has file dependence load it
         if content['__load__'] != nil
